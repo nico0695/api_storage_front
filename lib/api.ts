@@ -3,6 +3,7 @@ import type {
   FilesListResponse,
   UploadFilePayload,
   HealthCheckResponse,
+  FileFilters,
 } from './types';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
@@ -46,8 +47,25 @@ export async function uploadFile(payload: UploadFilePayload): Promise<FileItem> 
   });
 }
 
-export async function listFiles(): Promise<FilesListResponse> {
-  return fetchAPI<FilesListResponse>('/files');
+export async function listFiles(filters?: FileFilters): Promise<FilesListResponse> {
+  let url = '/files';
+
+  if (filters) {
+    const params = new URLSearchParams();
+
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== '' && value !== null) {
+        params.append(key, String(value));
+      }
+    });
+
+    const queryString = params.toString();
+    if (queryString) {
+      url += `?${queryString}`;
+    }
+  }
+
+  return fetchAPI<FilesListResponse>(url);
 }
 
 export async function getFileDetails(id: number): Promise<FileItem> {

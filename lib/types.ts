@@ -11,8 +11,27 @@ export interface FileItem {
   downloadUrl?: string; // Only present in GET /files/:id
 }
 
+export interface PaginationMetadata {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+}
+
 export interface FilesListResponse {
   files: FileItem[];
+  pagination?: PaginationMetadata;
+}
+
+export interface FileFilters {
+  search?: string;
+  mime?: string;
+  minSize?: number;
+  maxSize?: number;
+  dateFrom?: string;
+  dateTo?: string;
+  page?: number;
+  limit?: number;
 }
 
 export interface UploadFilePayload {
