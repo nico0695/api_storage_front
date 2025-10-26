@@ -98,7 +98,7 @@ export function FileList({ refreshTrigger }: FileListProps) {
         </CardHeader>
         <CardContent>
           <p className="text-muted-foreground text-center py-8">
-            No files uploaded yet. Upload your first file above!
+            No files uploaded yet. Click "Add File" to upload your first file.
           </p>
         </CardContent>
       </Card>

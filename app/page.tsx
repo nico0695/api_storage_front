@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { useRouter } from "next/navigation"
-import { FileUpload } from "@/components/file-upload"
+import { UploadDialog } from "@/components/upload-dialog"
 import { FileList } from "@/components/file-list"
 import { Button } from "@/components/ui/button"
 import { LogOut } from "lucide-react"
@@ -55,8 +55,10 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="space-y-8">
-        <FileUpload onUploadSuccess={handleUploadSuccess} />
+      <div className="space-y-4">
+        <div className="flex justify-end">
+          <UploadDialog onUploadSuccess={handleUploadSuccess} />
+        </div>
         <FileList refreshTrigger={refreshTrigger} />
       </div>
     </div>
