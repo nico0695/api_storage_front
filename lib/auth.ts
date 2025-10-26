@@ -1,14 +1,25 @@
-export function login(username: string, password: string): boolean {
-  // Check credentials from environment variables
-  const validUsername = process.env.NEXT_PUBLIC_AUTH_USERNAME || "admin"
-  const validPassword = process.env.NEXT_PUBLIC_AUTH_PASSWORD || "admin123"
+export async function login(username: string, password: string): Promise<boolean> {
+  try {
+    const response = await fetch("/api/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    })
 
-  if (username === validUsername && password === validPassword) {
-    localStorage.setItem("authenticated", "true")
-    return true
+    const data = await response.json()
+
+    if (data.success) {
+      localStorage.setItem("authenticated", "true")
+      return true
+    }
+
+    return false
+  } catch (error) {
+    console.error("Login error:", error)
+    return false
   }
-
-  return false
 }
 
 export function logout(): void {
