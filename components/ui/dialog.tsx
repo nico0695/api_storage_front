@@ -1,5 +1,5 @@
-import * as React from "react"
-import { cn } from "@/lib/utils"
+import * as React from 'react'
+import { cn } from '@/lib/utils'
 
 interface DialogContextValue {
   open: boolean
@@ -21,8 +21,10 @@ const Dialog = ({ open, onOpenChange, children }: DialogProps) => {
   const actualOnOpenChange = isControlled ? onOpenChange : setInternalOpen
 
   return (
-    <DialogContext.Provider value={{ open: actualOpen, onOpenChange: actualOnOpenChange || (() => {}) }}>
-      {React.Children.map(children, child => {
+    <DialogContext.Provider
+      value={{ open: actualOpen, onOpenChange: actualOnOpenChange || (() => {}) }}
+    >
+      {React.Children.map(children, (child) => {
         if (React.isValidElement(child) && child.type !== DialogContent) {
           return child
         }
@@ -35,7 +37,7 @@ const Dialog = ({ open, onOpenChange, children }: DialogProps) => {
             onClick={() => actualOnOpenChange?.(false)}
           />
           <div className="relative z-50">
-            {React.Children.map(children, child => {
+            {React.Children.map(children, (child) => {
               if (React.isValidElement(child) && child.type === DialogContent) {
                 return child
               }
@@ -56,7 +58,7 @@ const DialogTrigger = React.forwardRef<
 >(({ className, children, asChild = false, ...props }, ref) => {
   const context = React.useContext(DialogContext)
   if (!context) {
-    throw new Error("DialogTrigger must be used within a Dialog")
+    throw new Error('DialogTrigger must be used within a Dialog')
   }
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -82,7 +84,7 @@ const DialogTrigger = React.forwardRef<
     </button>
   )
 })
-DialogTrigger.displayName = "DialogTrigger"
+DialogTrigger.displayName = 'DialogTrigger'
 
 const DialogContent = React.forwardRef<
   HTMLDivElement,
@@ -91,7 +93,7 @@ const DialogContent = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "relative bg-background border rounded-lg shadow-lg w-full p-6 mx-4",
+      'relative bg-background border rounded-lg shadow-lg w-full p-6 mx-4',
       className
     )}
     {...props}
@@ -99,29 +101,26 @@ const DialogContent = React.forwardRef<
     {children}
   </div>
 ))
-DialogContent.displayName = "DialogContent"
+DialogContent.displayName = 'DialogContent'
 
-const DialogHeader = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
+const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn("flex flex-col space-y-1.5 text-center sm:text-left", className)}
+    className={cn('flex flex-col space-y-1.5 text-center sm:text-left', className)}
     {...props}
   />
 )
-DialogHeader.displayName = "DialogHeader"
+DialogHeader.displayName = 'DialogHeader'
 
-const DialogFooter = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
+const DialogFooter = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
   <div
-    className={cn("flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2", className)}
+    className={cn(
+      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
+      className
+    )}
     {...props}
   />
 )
-DialogFooter.displayName = "DialogFooter"
+DialogFooter.displayName = 'DialogFooter'
 
 const DialogTitle = React.forwardRef<
   HTMLHeadingElement,
@@ -129,23 +128,19 @@ const DialogTitle = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <h2
     ref={ref}
-    className={cn("text-lg font-semibold leading-none tracking-tight", className)}
+    className={cn('text-lg font-semibold leading-none tracking-tight', className)}
     {...props}
   />
 ))
-DialogTitle.displayName = "DialogTitle"
+DialogTitle.displayName = 'DialogTitle'
 
 const DialogDescription = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
-    {...props}
-  />
+  <p ref={ref} className={cn('text-sm text-muted-foreground', className)} {...props} />
 ))
-DialogDescription.displayName = "DialogDescription"
+DialogDescription.displayName = 'DialogDescription'
 
 export {
   Dialog,

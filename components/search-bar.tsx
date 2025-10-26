@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { useEffect, useState } from "react"
-import { Search, X } from "lucide-react"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
+import { Search, X } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 interface SearchBarProps {
   value: string
@@ -15,7 +15,7 @@ interface SearchBarProps {
 export function SearchBar({
   value,
   onChange,
-  placeholder = "Search files by name...",
+  placeholder = 'Search files by name...',
   debounceMs = 500,
 }: SearchBarProps) {
   const [localValue, setLocalValue] = useState(value)
@@ -35,8 +35,8 @@ export function SearchBar({
   }, [localValue, value, onChange, debounceMs])
 
   const handleClear = () => {
-    setLocalValue("")
-    onChange("")
+    setLocalValue('')
+    onChange('')
   }
 
   return (

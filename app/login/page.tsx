@@ -1,19 +1,25 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Button } from "@/components/ui/button"
-import { toast } from "sonner"
-import { login } from "@/lib/auth"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { ThemeToggle } from '@/components/theme-toggle'
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { login } from '@/lib/auth'
 
 export default function LoginPage() {
   const router = useRouter()
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -23,10 +29,10 @@ export default function LoginPage() {
     const success = await login(username, password)
 
     if (success) {
-      toast.success("Login successful!")
-      router.push("/")
+      toast.success('Login successful!')
+      router.push('/')
     } else {
-      toast.error("Invalid credentials")
+      toast.error('Invalid credentials')
     }
 
     setLoading(false)
@@ -40,7 +46,9 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle>Login</CardTitle>
-          <CardDescription>Enter your credentials to access the file storage</CardDescription>
+          <CardDescription>
+            Enter your credentials to access the file storage
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -71,7 +79,7 @@ export default function LoginPage() {
             </div>
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Logging in..." : "Login"}
+              {loading ? 'Logging in...' : 'Login'}
             </Button>
           </form>
         </CardContent>

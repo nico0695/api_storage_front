@@ -1,13 +1,13 @@
-"use client"
+'use client'
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { UploadDialog } from "@/components/upload-dialog"
-import { FileList } from "@/components/file-list"
-import { Button } from "@/components/ui/button"
-import { LogOut } from "lucide-react"
-import { isAuthenticated, logout } from "@/lib/auth"
-import { ThemeToggle } from "@/components/theme-toggle"
+import { LogOut } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState, useEffect } from 'react'
+import { FileList } from '@/components/file-list'
+import { ThemeToggle } from '@/components/theme-toggle'
+import { Button } from '@/components/ui/button'
+import { UploadDialog } from '@/components/upload-dialog'
+import { isAuthenticated, logout } from '@/lib/auth'
 
 export default function Home() {
   const router = useRouter()
@@ -17,7 +17,7 @@ export default function Home() {
   useEffect(() => {
     setMounted(true)
     if (!isAuthenticated()) {
-      router.push("/login")
+      router.push('/login')
     }
   }, [router])
 
@@ -27,7 +27,7 @@ export default function Home() {
 
   const handleLogout = () => {
     logout()
-    router.push("/login")
+    router.push('/login')
   }
 
   if (!mounted || !isAuthenticated()) {

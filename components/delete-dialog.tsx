@@ -1,7 +1,8 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { toast } from "sonner"
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -9,10 +10,9 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
-import { deleteFile } from "@/lib/api"
-import type { FileItem } from "@/lib/types"
+} from '@/components/ui/dialog'
+import { deleteFile } from '@/lib/api'
+import type { FileItem } from '@/lib/types'
 
 interface DeleteDialogProps {
   open: boolean
@@ -30,16 +30,18 @@ export function DeleteDialog({
   const [deleting, setDeleting] = useState(false)
 
   const handleDelete = async () => {
-    if (!file) return
+    if (!file) {
+      return
+    }
 
     setDeleting(true)
 
     try {
       await deleteFile(file.id)
-      toast.success("File deleted successfully")
+      toast.success('File deleted successfully')
       onDeleteSuccess()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to delete file")
+      toast.error(error instanceof Error ? error.message : 'Failed to delete file')
     } finally {
       setDeleting(false)
     }
@@ -72,12 +74,8 @@ export function DeleteDialog({
           >
             Cancel
           </Button>
-          <Button
-            variant="destructive"
-            onClick={handleDelete}
-            disabled={deleting}
-          >
-            {deleting ? "Deleting..." : "Delete"}
+          <Button variant="destructive" onClick={handleDelete} disabled={deleting}>
+            {deleting ? 'Deleting...' : 'Delete'}
           </Button>
         </DialogFooter>
       </DialogContent>

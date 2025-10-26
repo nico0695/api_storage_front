@@ -5,6 +5,7 @@ A minimal Express API for uploading, listing, and deleting files using Backblaze
 ## 📋 Project Summary
 
 This is a lightweight file storage API that:
+
 - Uploads files to **Backblaze B2** cloud storage
 - Stores file metadata (name, size, MIME type, etc.) in a local **SQLite** database
 - Provides REST endpoints for file management
@@ -62,6 +63,7 @@ cp .env.example .env
 ```
 
 Edit `.env`:
+
 ```env
 PORT=4000
 B2_REGION=us-west-002
@@ -72,6 +74,7 @@ B2_BUCKET=your_bucket_name
 ```
 
 **How to get B2 credentials:**
+
 1. Sign up at [Backblaze B2](https://www.backblaze.com/b2/cloud-storage.html)
 2. Create a bucket
 3. Generate application keys with read/write permissions
@@ -80,11 +83,13 @@ B2_BUCKET=your_bucket_name
 ### 3. Run the Server
 
 **Development mode:**
+
 ```bash
 npm run dev
 ```
 
 **Production build:**
+
 ```bash
 npm run build
 npm start
@@ -99,6 +104,7 @@ All file management endpoints require API key authentication via the `X-API-Key`
 ### Quick Setup
 
 1. **Create an API key:**
+
    ```bash
    npm run key:add -- --name "my-app"
    ```
@@ -127,11 +133,13 @@ npm run key:help              # Show help
 ## 🔌 API Endpoints
 
 ### 1. Health Check
+
 ```
 GET /health
 ```
 
 **Response:**
+
 ```json
 {
   "status": "ok",
@@ -140,17 +148,20 @@ GET /health
 ```
 
 ### 2. Upload File
+
 ```
 POST /files/upload
 Content-Type: multipart/form-data
 ```
 
 **Request:**
+
 - Send file as `multipart/form-data` with field name `file`
 - Optional: `customName` - Custom name for the file
 - Optional: `metadata` - JSON metadata (as string)
 
 **Example using curl:**
+
 ```bash
 curl -X POST http://localhost:4000/files/upload \
   -H "X-API-Key: your_api_key_here" \
@@ -160,6 +171,7 @@ curl -X POST http://localhost:4000/files/upload \
 ```
 
 **Example using Postman:**
+
 - Method: POST
 - URL: `http://localhost:4000/files/upload`
 - Body: form-data
@@ -168,6 +180,7 @@ curl -X POST http://localhost:4000/files/upload \
   - Key: `metadata` (type: Text) - Optional JSON metadata
 
 **Response:**
+
 ```json
 {
   "id": 1,
@@ -176,18 +189,20 @@ curl -X POST http://localhost:4000/files/upload \
   "key": "1729776000000-example.jpg",
   "mime": "image/jpeg",
   "size": 125648,
-  "metadata": {"author": "John Doe", "tags": ["important"]},
+  "metadata": { "author": "John Doe", "tags": ["important"] },
   "createdAt": "2025-10-24T12:00:00.000Z",
   "updatedAt": "2025-10-24T12:00:00.000Z"
 }
 ```
 
 ### 3. List Files
+
 ```
 GET /files
 ```
 
 **Response:**
+
 ```json
 {
   "files": [
@@ -198,7 +213,7 @@ GET /files
       "key": "1729776000000-example.jpg",
       "mime": "image/jpeg",
       "size": 125648,
-      "metadata": {"author": "John Doe", "tags": ["important"]},
+      "metadata": { "author": "John Doe", "tags": ["important"] },
       "createdAt": "2025-10-24T12:00:00.000Z",
       "updatedAt": "2025-10-24T12:00:00.000Z"
     }
@@ -207,17 +222,20 @@ GET /files
 ```
 
 ### 4. Get File Details
+
 ```
 GET /files/:id
 ```
 
 **Example:**
+
 ```bash
 curl http://localhost:4000/files/1 \
   -H "X-API-Key: your_api_key_here"
 ```
 
 **Response:**
+
 ```json
 {
   "id": 1,
@@ -226,7 +244,7 @@ curl http://localhost:4000/files/1 \
   "key": "1729776000000-example.jpg",
   "mime": "image/jpeg",
   "size": 125648,
-  "metadata": {"author": "John Doe", "tags": ["important"]},
+  "metadata": { "author": "John Doe", "tags": ["important"] },
   "createdAt": "2025-10-24T12:00:00.000Z",
   "updatedAt": "2025-10-24T12:00:00.000Z",
   "downloadUrl": "https://s3.us-east-005.backblazeb2.com/your-bucket/1729776000000-example.jpg?X-Amz-Algorithm=..."
@@ -236,17 +254,20 @@ curl http://localhost:4000/files/1 \
 **Note:** The `downloadUrl` is a presigned URL valid for 1 hour (3600 seconds) that allows direct download of the file from Backblaze B2.
 
 ### 5. Delete File
+
 ```
 DELETE /files/:id
 ```
 
 **Example:**
+
 ```bash
 curl -X DELETE http://localhost:4000/files/1 \
   -H "X-API-Key: your_api_key_here"
 ```
 
 **Response:**
+
 ```json
 {
   "message": "File deleted successfully"
@@ -297,6 +318,7 @@ curl -X DELETE http://localhost:4000/files/1 \
 **Note:** All commands require an API key. Create one first: `npm run key:add -- --name "test"`
 
 **Upload a file with custom name and metadata:**
+
 ```bash
 curl -X POST http://localhost:4000/files/upload \
   -H "X-API-Key: your_api_key_here" \
@@ -306,6 +328,7 @@ curl -X POST http://localhost:4000/files/upload \
 ```
 
 **Upload a file without optional fields:**
+
 ```bash
 curl -X POST http://localhost:4000/files/upload \
   -H "X-API-Key: your_api_key_here" \
@@ -313,18 +336,21 @@ curl -X POST http://localhost:4000/files/upload \
 ```
 
 **List all files:**
+
 ```bash
 curl http://localhost:4000/files \
   -H "X-API-Key: your_api_key_here"
 ```
 
 **Get file details with download URL:**
+
 ```bash
 curl http://localhost:4000/files/1 \
   -H "X-API-Key: your_api_key_here"
 ```
 
 **Delete a file (replace 1 with actual ID):**
+
 ```bash
 curl -X DELETE http://localhost:4000/files/1 \
   -H "X-API-Key: your_api_key_here"
@@ -341,6 +367,7 @@ This API is designed to run on a small VPS or cloud instance:
 5. Run: `npm start` or use a process manager like PM2
 
 **Using PM2:**
+
 ```bash
 npm install -g pm2
 pm2 start dist/server.js --name api-storage
@@ -350,27 +377,30 @@ pm2 startup
 
 ## 📦 Environment Variables
 
-| Variable | Description | Example |
-|----------|-------------|---------|
-| `PORT` | Server port | `4000` |
-| `B2_REGION` | Backblaze region | `us-west-002` |
+| Variable      | Description            | Example                                  |
+| ------------- | ---------------------- | ---------------------------------------- |
+| `PORT`        | Server port            | `4000`                                   |
+| `B2_REGION`   | Backblaze region       | `us-west-002`                            |
 | `B2_ENDPOINT` | S3-compatible endpoint | `https://s3.us-west-002.backblazeb2.com` |
-| `B2_KEY_ID` | Application key ID | Your key ID |
-| `B2_APP_KEY` | Application key secret | Your app key |
-| `B2_BUCKET` | Bucket name | Your bucket name |
+| `B2_KEY_ID`   | Application key ID     | Your key ID                              |
+| `B2_APP_KEY`  | Application key secret | Your app key                             |
+| `B2_BUCKET`   | Bucket name            | Your bucket name                         |
 
 ## 🐛 Troubleshooting
 
 **Database errors:**
+
 - Ensure `src/data/` directory has write permissions
 - Check SQLite is properly installed
 
 **B2 connection errors:**
+
 - Verify credentials in `.env`
 - Check endpoint URL matches your bucket region
 - Ensure bucket has correct permissions
 
 **Upload failures:**
+
 - Check file size limits (default 50MB in Express config)
 - Verify MIME type is supported
 - Check B2 bucket has sufficient storage

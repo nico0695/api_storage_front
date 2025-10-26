@@ -1,12 +1,10 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { useDropzone } from 'react-dropzone';
-import { Upload, Plus } from 'lucide-react';
-import { toast } from 'sonner';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
+import { Upload, Plus } from 'lucide-react'
+import { useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -14,75 +12,75 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog';
-import { uploadFile } from '@/lib/api';
-import type { UploadFilePayload } from '@/lib/types';
+} from '@/components/ui/dialog'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { uploadFile } from '@/lib/api'
+import type { UploadFilePayload } from '@/lib/types'
 
 interface UploadDialogProps {
-  onUploadSuccess?: () => void;
+  onUploadSuccess?: () => void
 }
 
 export function UploadDialog({ onUploadSuccess }: UploadDialogProps) {
-  const [open, setOpen] = useState(false);
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [customName, setCustomName] = useState('');
-  const [metadata, setMetadata] = useState('');
-  const [uploading, setUploading] = useState(false);
+  const [open, setOpen] = useState(false)
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [customName, setCustomName] = useState('')
+  const [metadata, setMetadata] = useState('')
+  const [uploading, setUploading] = useState(false)
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop: (acceptedFiles) => {
       if (acceptedFiles.length > 0) {
-        setSelectedFile(acceptedFiles[0]);
+        setSelectedFile(acceptedFiles[0])
       }
     },
     maxFiles: 1,
-  });
+  })
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      toast.error('Please select a file');
-      return;
+      toast.error('Please select a file')
+      return
     }
 
-    setUploading(true);
+    setUploading(true)
 
     try {
       const payload: UploadFilePayload = {
         file: selectedFile,
-      };
+      }
 
       if (customName.trim()) {
-        payload.customName = customName.trim();
+        payload.customName = customName.trim()
       }
 
       if (metadata.trim()) {
         try {
-          payload.metadata = JSON.parse(metadata);
-        } catch (error) {
-          toast.error('Invalid JSON metadata');
-          setUploading(false);
-          return;
+          payload.metadata = JSON.parse(metadata)
+        } catch (_error) {
+          toast.error('Invalid JSON metadata')
+          setUploading(false)
+          return
         }
       }
 
-      await uploadFile(payload);
-      toast.success('File uploaded successfully');
+      await uploadFile(payload)
+      toast.success('File uploaded successfully')
 
       // Reset form
-      setSelectedFile(null);
-      setCustomName('');
-      setMetadata('');
-      setOpen(false);
+      setSelectedFile(null)
+      setCustomName('')
+      setMetadata('')
+      setOpen(false)
 
-      onUploadSuccess?.();
+      onUploadSuccess?.()
     } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : 'Failed to upload file'
-      );
+      toast.error(error instanceof Error ? error.message : 'Failed to upload file')
     } finally {
-      setUploading(false);
+      setUploading(false)
     }
-  };
+  }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -122,9 +120,7 @@ export function UploadDialog({ onUploadSuccess }: UploadDialogProps) {
                 <p className="font-medium">
                   {isDragActive ? 'Drop file here' : 'Drag & drop file here'}
                 </p>
-                <p className="text-sm text-muted-foreground">
-                  or click to browse
-                </p>
+                <p className="text-sm text-muted-foreground">or click to browse</p>
               </div>
             )}
           </div>
@@ -160,5 +156,5 @@ export function UploadDialog({ onUploadSuccess }: UploadDialogProps) {
         </div>
       </DialogContent>
     </Dialog>
-  );
+  )
 }

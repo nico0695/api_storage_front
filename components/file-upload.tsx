@@ -1,15 +1,15 @@
-"use client"
+'use client'
 
-import { useState } from "react"
-import { useDropzone } from "react-dropzone"
-import { Upload } from "lucide-react"
-import { toast } from "sonner"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Card, CardContent } from "@/components/ui/card"
-import { uploadFile } from "@/lib/api"
-import type { UploadFilePayload } from "@/lib/types"
+import { Upload } from 'lucide-react'
+import { useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { toast } from 'sonner'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { uploadFile } from '@/lib/api'
+import type { UploadFilePayload } from '@/lib/types'
 
 interface FileUploadProps {
   onUploadSuccess?: () => void
@@ -17,8 +17,8 @@ interface FileUploadProps {
 
 export function FileUpload({ onUploadSuccess }: FileUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [customName, setCustomName] = useState("")
-  const [metadata, setMetadata] = useState("")
+  const [customName, setCustomName] = useState('')
+  const [metadata, setMetadata] = useState('')
   const [uploading, setUploading] = useState(false)
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -32,7 +32,7 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
 
   const handleUpload = async () => {
     if (!selectedFile) {
-      toast.error("Please select a file")
+      toast.error('Please select a file')
       return
     }
 
@@ -50,24 +50,24 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
       if (metadata.trim()) {
         try {
           payload.metadata = JSON.parse(metadata)
-        } catch (error) {
-          toast.error("Invalid JSON metadata")
+        } catch (_error) {
+          toast.error('Invalid JSON metadata')
           setUploading(false)
           return
         }
       }
 
       await uploadFile(payload)
-      toast.success("File uploaded successfully")
+      toast.success('File uploaded successfully')
 
       // Reset form
       setSelectedFile(null)
-      setCustomName("")
-      setMetadata("")
+      setCustomName('')
+      setMetadata('')
 
       onUploadSuccess?.()
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Failed to upload file")
+      toast.error(error instanceof Error ? error.message : 'Failed to upload file')
     } finally {
       setUploading(false)
     }
@@ -81,8 +81,8 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
             {...getRootProps()}
             className={`border-2 border-dashed rounded-lg p-8 text-center cursor-pointer transition-colors ${
               isDragActive
-                ? "border-primary bg-primary/5"
-                : "border-muted-foreground/25 hover:border-primary/50"
+                ? 'border-primary bg-primary/5'
+                : 'border-muted-foreground/25 hover:border-primary/50'
             }`}
           >
             <input {...getInputProps()} />
@@ -97,7 +97,7 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
             ) : (
               <div>
                 <p className="font-medium">
-                  {isDragActive ? "Drop file here" : "Drag & drop file here"}
+                  {isDragActive ? 'Drop file here' : 'Drag & drop file here'}
                 </p>
                 <p className="text-sm text-muted-foreground">or click to browse</p>
               </div>
@@ -130,7 +130,7 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
             disabled={!selectedFile || uploading}
             className="w-full"
           >
-            {uploading ? "Uploading..." : "Upload File"}
+            {uploading ? 'Uploading...' : 'Upload File'}
           </Button>
         </div>
       </CardContent>

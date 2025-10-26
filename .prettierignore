@@ -1,0 +1,29 @@
+# Dependencies
+node_modules
+
+# Next.js
+.next
+out
+build
+dist
+
+# Testing
+coverage
+
+# Misc
+.DS_Store
+*.log
+.env*
+!.env.example
+
+# Package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Public assets
+public
+
+# Cache
+.cache
+.turbo

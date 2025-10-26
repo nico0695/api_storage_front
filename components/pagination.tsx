@@ -1,9 +1,9 @@
-"use client"
+'use client'
 
-import { ChevronLeft, ChevronRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Select } from "@/components/ui/select"
-import type { PaginationMetadata } from "@/lib/types"
+import { ChevronLeft, ChevronRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import { Select } from '@/components/ui/select'
+import type { PaginationMetadata } from '@/lib/types'
 
 interface PaginationProps {
   pagination: PaginationMetadata
@@ -11,11 +11,7 @@ interface PaginationProps {
   onLimitChange: (limit: number) => void
 }
 
-export function Pagination({
-  pagination,
-  onPageChange,
-  onLimitChange,
-}: PaginationProps) {
+export function Pagination({ pagination, onPageChange, onLimitChange }: PaginationProps) {
   const { page, limit, total, totalPages } = pagination
 
   const firstIndex = total === 0 ? 0 : (page - 1) * limit + 1
@@ -34,14 +30,16 @@ export function Pagination({
     }
 
     if (page - delta > 2) {
-      range.unshift("...")
+      range.unshift('...')
     }
     if (page + delta < totalPages - 1) {
-      range.push("...")
+      range.push('...')
     }
 
     range.unshift(1)
-    if (totalPages > 1) range.push(totalPages)
+    if (totalPages > 1) {
+      range.push(totalPages)
+    }
 
     return range
   }
@@ -73,14 +71,14 @@ export function Pagination({
 
           <div className="flex items-center gap-1">
             {getPageNumbers().map((pageNum, idx) =>
-              pageNum === "..." ? (
+              pageNum === '...' ? (
                 <span key={`ellipsis-${idx}`} className="px-2 text-muted-foreground">
                   ...
                 </span>
               ) : (
                 <Button
                   key={pageNum}
-                  variant={page === pageNum ? "default" : "outline"}
+                  variant={page === pageNum ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => onPageChange(pageNum as number)}
                   className="h-8 w-8 p-0"
@@ -106,9 +104,7 @@ export function Pagination({
 
       {/* Page Size Selector */}
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground whitespace-nowrap">
-          Per page:
-        </span>
+        <span className="text-sm text-muted-foreground whitespace-nowrap">Per page:</span>
         <Select
           value={String(limit)}
           onChange={(e) => onLimitChange(Number(e.target.value))}
