@@ -7,6 +7,7 @@ import { FileList } from "@/components/file-list"
 import { Button } from "@/components/ui/button"
 import { LogOut } from "lucide-react"
 import { isAuthenticated, logout } from "@/lib/auth"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export default function Home() {
   const router = useRouter()
@@ -44,10 +45,13 @@ export default function Home() {
             </p>
           </div>
 
-          <Button variant="outline" size="sm" onClick={handleLogout}>
-            <LogOut className="h-4 w-4 mr-2" />
-            Logout
-          </Button>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Button variant="outline" size="sm" onClick={handleLogout}>
+              <LogOut className="h-4 w-4 mr-2" />
+              Logout
+            </Button>
+          </div>
         </div>
       </div>
 
