@@ -1,6 +1,6 @@
 'use client'
 
-import { Download, Trash2, FileIcon, Image, Video, FileText, Filter, Link2, Copy } from 'lucide-react'
+import { Download, Trash2, FileIcon, Image, Video, FileText, Filter, Link2, Copy, Share2 } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -31,6 +31,7 @@ import { Pagination } from './pagination'
 import { SearchBar } from './search-bar'
 import { ShareLinkDialog } from './share-link-dialog'
 import { ShareLinksDisplay } from './share-links-display'
+import { ShareDialog } from './share-dialog'
 
 interface FileListProps {
   refreshTrigger?: number
@@ -343,6 +344,21 @@ export function FileList({ refreshTrigger }: FileListProps) {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
+                          {file.shareLinks && file.shareLinks.length > 0 && (
+                            <ShareDialog
+                              fileName={file.customName || file.name}
+                              shareUrl={`${window.location.origin}/share/${file.shareLinks[0].token}`}
+                              trigger={
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  title="Share file"
+                                >
+                                  <Share2 className="h-4 w-4" />
+                                </Button>
+                              }
+                            />
+                          )}
                           {file.shareLinks && file.shareLinks.length > 0 ? (
                             <Button
                               variant="ghost"
