@@ -210,7 +210,7 @@ export default function SharedFilePage() {
             {/* Image Preview */}
             {isImage(fileData.file.mime) && (
               <div
-                className={`rounded-lg border overflow-hidden bg-white dark:bg-slate-50 ${showCheckerboard ? 'checkerboard-bg' : ''} relative`}
+                className={`rounded-lg border overflow-hidden bg-white dark:bg-slate-50 ${showCheckerboard ? 'checkerboard-bg' : ''} relative h-[30vh] md:h-[40vh] max-h-[300px] md:max-h-[400px] flex items-center justify-center`}
               >
                 <Button
                   variant="ghost"
@@ -229,7 +229,7 @@ export default function SharedFilePage() {
                   alt={fileData.file.customName || fileData.file.name}
                   fill
                   style={{ objectFit: 'contain' }}
-                  className="max-h-96"
+                  className="object-contain"
                 />
               </div>
             )}
