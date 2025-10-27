@@ -4,6 +4,7 @@ import { Upload, Plus } from 'lucide-react'
 import { useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { toast } from 'sonner'
+import { MetadataJsonField } from '@/components/json-metadata-field'
 import { Button } from '@/components/ui/button'
 import {
   Dialog,
@@ -17,6 +18,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { uploadFile } from '@/lib/api'
 import type { UploadFilePayload } from '@/lib/types'
+import type { MetadataStatus } from '@/lib/json-metadata'
 
 interface UploadDialogProps {
   onUploadSuccess?: () => void
@@ -27,6 +29,7 @@ export function UploadDialog({ onUploadSuccess }: UploadDialogProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [customName, setCustomName] = useState('')
   const [metadata, setMetadata] = useState('')
+  const [metadataStatus, setMetadataStatus] = useState<MetadataStatus>('idle')
   const [uploading, setUploading] = useState(false)
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -61,6 +64,7 @@ export function UploadDialog({ onUploadSuccess }: UploadDialogProps) {
         } catch (_error) {
           toast.error('Invalid JSON metadata')
           setUploading(false)
+          setMetadataStatus('invalid')
           return
         }
       }
@@ -72,6 +76,7 @@ export function UploadDialog({ onUploadSuccess }: UploadDialogProps) {
       setSelectedFile(null)
       setCustomName('')
       setMetadata('')
+      setMetadataStatus('idle')
       setOpen(false)
 
       onUploadSuccess?.()
@@ -136,15 +141,13 @@ export function UploadDialog({ onUploadSuccess }: UploadDialogProps) {
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor="metadata">Metadata (Optional JSON)</Label>
-            <Input
-              id="metadata"
-              placeholder='{"author": "John Doe", "tags": ["important"]}'
-              value={metadata}
-              onChange={(e) => setMetadata(e.target.value)}
-            />
-          </div>
+          <MetadataJsonField
+            value={metadata}
+            status={metadataStatus}
+            onChange={setMetadata}
+            onStatusChange={setMetadataStatus}
+            id="upload-dialog-metadata"
+          />
 
           <Button
             onClick={handleUpload}
