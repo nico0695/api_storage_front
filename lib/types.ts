@@ -1,3 +1,12 @@
+export interface ShareLink {
+  token: string
+  shareUrl: string
+  expiresAt: string
+  hasPassword: boolean
+  accessCount: number
+  createdAt?: string
+}
+
 export interface FileItem {
   id: number
   name: string
@@ -9,6 +18,7 @@ export interface FileItem {
   createdAt: string
   updatedAt: string
   downloadUrl?: string // Only present in GET /files/:id
+  shareLinks?: ShareLink[] // Share links for this file
 }
 
 export interface PaginationMetadata {
@@ -47,4 +57,42 @@ export interface HealthCheckResponse {
 
 export interface ErrorResponse {
   error: string | object
+}
+
+// Share Link API Types
+export interface CreateShareLinkRequest {
+  ttl?: string // Time-to-live in seconds as string (default: 7 days)
+  password?: string // Optional password protection
+}
+
+export interface CreateShareLinkResponse {
+  shareUrl: string
+  token: string
+  expiresAt: string
+  hasPassword: boolean
+  ttl: number
+}
+
+export interface ShareLinksListResponse {
+  shares: ShareLink[]
+}
+
+// Public Shared File Access Types
+export interface SharedFileAccessResponse {
+  file: {
+    id: number
+    name: string
+    customName: string | null
+    mime: string
+    size: number
+    createdAt: string
+  }
+  downloadUrl: string
+  expiresAt: string
+  accessCount: number
+}
+
+export interface SharedFileErrorResponse {
+  error: string
+  requiresPassword?: boolean
 }

@@ -67,3 +67,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .checkerboard-bg {
+    background-image: 
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.05), rgba(0,0,0,0.05) 10px, rgba(255,255,255,0.05) 10px, rgba(255,255,255,0.05) 20px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.05), rgba(255,255,255,0.05) 10px, rgba(0,0,0,0.05) 10px, rgba(0,0,0,0.05) 20px);
+  }
+
+  .dark .checkerboard-bg {
+    background-image: 
+      repeating-linear-gradient(0deg, rgba(0,0,0,0.08), rgba(0,0,0,0.08) 10px, rgba(255,255,255,0.08) 10px, rgba(255,255,255,0.08) 20px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,0.08), rgba(255,255,255,0.08) 10px, rgba(0,0,0,0.08) 10px, rgba(0,0,0,0.08) 20px);
+  }
+}

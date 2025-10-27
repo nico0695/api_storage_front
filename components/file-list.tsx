@@ -1,6 +1,6 @@
 'use client'
 
-import { Download, Trash2, FileIcon, Image, Video, FileText, Filter } from 'lucide-react'
+import { Download, Trash2, FileIcon, Image, Video, FileText, Filter, Link2, Copy } from 'lucide-react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { toast } from 'sonner'
@@ -29,6 +29,8 @@ import { DeleteDialog } from './delete-dialog'
 import { FilterPanel } from './filter-panel'
 import { Pagination } from './pagination'
 import { SearchBar } from './search-bar'
+import { ShareLinkDialog } from './share-link-dialog'
+import { ShareLinksDisplay } from './share-links-display'
 
 interface FileListProps {
   refreshTrigger?: number
@@ -50,6 +52,7 @@ export function FileList({ refreshTrigger }: FileListProps) {
   const [loading, setLoading] = useState(true)
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
   const [filterDialogOpen, setFilterDialogOpen] = useState(false)
+  const [shareLinksDialogOpen, setShareLinksDialogOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState<FileItem | null>(null)
 
   // Initialize filters from URL params
@@ -152,6 +155,25 @@ export function FileList({ refreshTrigger }: FileListProps) {
     fetchFiles()
     setDeleteDialogOpen(false)
     setSelectedFile(null)
+  }
+
+  const handleCopyShareLink = async (token: string) => {
+    try {
+      const frontendUrl = `${window.location.origin}/share/${token}`
+      await navigator.clipboard.writeText(frontendUrl)
+      toast.success('Share link copied to clipboard!')
+    } catch (_error) {
+      toast.error('Failed to copy to clipboard')
+    }
+  }
+
+  const handleViewShareLinks = (file: FileItem) => {
+    setSelectedFile(file)
+    setShareLinksDialogOpen(true)
+  }
+
+  const handleShareSuccess = () => {
+    fetchFiles() // Refresh to get updated share links
   }
 
   const handleSearchChange = (search: string) => {
@@ -283,6 +305,7 @@ export function FileList({ refreshTrigger }: FileListProps) {
                     <TableHead>Type</TableHead>
                     <TableHead>Size</TableHead>
                     <TableHead>Uploaded</TableHead>
+                    <TableHead>Share</TableHead>
                     <TableHead className="text-right">Actions</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -305,8 +328,46 @@ export function FileList({ refreshTrigger }: FileListProps) {
                       <TableCell className="text-muted-foreground">
                         {formatDate(file.createdAt)}
                       </TableCell>
+                      <TableCell>
+                        {file.shareLinks && file.shareLinks.length > 0 ? (
+                          <button
+                            onClick={() => handleViewShareLinks(file)}
+                            className="text-sm text-primary hover:underline flex items-center gap-1"
+                          >
+                            <Link2 className="h-3 w-3" />
+                            {file.shareLinks.length} {file.shareLinks.length === 1 ? 'share' : 'shares'}
+                          </button>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">-</span>
+                        )}
+                      </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
+                          {file.shareLinks && file.shareLinks.length > 0 ? (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleCopyShareLink(file.shareLinks![0].token)}
+                              title="Copy share link"
+                            >
+                              <Copy className="h-4 w-4" />
+                            </Button>
+                          ) : (
+                            <ShareLinkDialog
+                              fileId={file.id}
+                              fileName={file.customName || file.name}
+                              onSuccess={handleShareSuccess}
+                              trigger={
+                                <Button
+                                  variant="ghost"
+                                  size="icon"
+                                  title="Create share link"
+                                >
+                                  <Link2 className="h-4 w-4" />
+                                </Button>
+                              }
+                            />
+                          )}
                           <Button
                             variant="ghost"
                             size="icon"
@@ -346,6 +407,14 @@ export function FileList({ refreshTrigger }: FileListProps) {
         onOpenChange={setDeleteDialogOpen}
         file={selectedFile}
         onDeleteSuccess={handleDeleteSuccess}
+      />
+
+      <ShareLinksDisplay
+        open={shareLinksDialogOpen}
+        onOpenChange={setShareLinksDialogOpen}
+        fileName={selectedFile?.customName || selectedFile?.name || ''}
+        shareLinks={selectedFile?.shareLinks || []}
+        onRevoke={handleShareSuccess}
       />
     </>
   )
