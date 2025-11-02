@@ -49,9 +49,13 @@ export function Pagination({ pagination, onPageChange, onLimitChange }: Paginati
   }
 
   return (
-    <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4">
+    <div
+      className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-4"
+      role="navigation"
+      aria-label="Paginación"
+    >
       {/* Info */}
-      <div className="text-sm text-muted-foreground">
+      <div className="text-sm text-muted-foreground" aria-live="polite">
         Showing {firstIndex}-{lastIndex} of {total} results
       </div>
 
@@ -63,16 +67,21 @@ export function Pagination({ pagination, onPageChange, onLimitChange }: Paginati
             size="sm"
             onClick={() => onPageChange(page - 1)}
             disabled={page === 1}
-            className="h-8 w-8 p-0"
-            title="Previous page"
+            className="h-10 w-10 p-0 md:h-8 md:w-8"
+            title="Página anterior"
+            aria-label="Ir a página anterior"
           >
-            <ChevronLeft className="h-4 w-4" />
+            <ChevronLeft className="h-5 w-5 md:h-4 md:w-4" />
           </Button>
 
           <div className="flex items-center gap-1">
             {getPageNumbers().map((pageNum, idx) =>
               pageNum === '...' ? (
-                <span key={`ellipsis-${idx}`} className="px-2 text-muted-foreground">
+                <span
+                  key={`ellipsis-${idx}`}
+                  className="px-2 text-muted-foreground"
+                  aria-hidden="true"
+                >
                   ...
                 </span>
               ) : (
@@ -81,7 +90,9 @@ export function Pagination({ pagination, onPageChange, onLimitChange }: Paginati
                   variant={page === pageNum ? 'default' : 'outline'}
                   size="sm"
                   onClick={() => onPageChange(pageNum as number)}
-                  className="h-8 w-8 p-0"
+                  className="h-10 w-10 p-0 md:h-8 md:w-8"
+                  aria-label={`Ir a página ${pageNum}`}
+                  aria-current={page === pageNum ? 'page' : undefined}
                 >
                   {pageNum}
                 </Button>
@@ -94,21 +105,29 @@ export function Pagination({ pagination, onPageChange, onLimitChange }: Paginati
             size="sm"
             onClick={() => onPageChange(page + 1)}
             disabled={page === totalPages}
-            className="h-8 w-8 p-0"
-            title="Next page"
+            className="h-10 w-10 p-0 md:h-8 md:w-8"
+            title="Página siguiente"
+            aria-label="Ir a página siguiente"
           >
-            <ChevronRight className="h-4 w-4" />
+            <ChevronRight className="h-5 w-5 md:h-4 md:w-4" />
           </Button>
         </div>
       )}
 
       {/* Page Size Selector */}
       <div className="flex items-center gap-2">
-        <span className="text-sm text-muted-foreground whitespace-nowrap">Per page:</span>
+        <label
+          htmlFor="page-size-select"
+          className="text-sm text-muted-foreground whitespace-nowrap"
+        >
+          Per page:
+        </label>
         <Select
+          id="page-size-select"
           value={String(limit)}
           onChange={(e) => onLimitChange(Number(e.target.value))}
-          className="h-8 w-20"
+          className="h-10 w-20 md:h-8"
+          aria-label="Seleccionar cantidad de elementos por página"
         >
           <option value="10">10</option>
           <option value="20">20</option>

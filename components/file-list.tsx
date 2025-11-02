@@ -26,6 +26,7 @@ import { listFiles, getFileDetails } from '@/lib/api'
 import type { FileItem, FileFilters, PaginationMetadata } from '@/lib/types'
 import { formatFileSize, formatDate } from '@/lib/utils'
 import { DeleteDialog } from './delete-dialog'
+import { FileCard } from './file-card'
 import { FilterPanel } from './filter-panel'
 import { Pagination } from './pagination'
 import { SearchBar } from './search-bar'
@@ -299,113 +300,132 @@ export function FileList({ refreshTrigger }: FileListProps) {
             </p>
           ) : (
             <>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Name</TableHead>
-                    <TableHead>Type</TableHead>
-                    <TableHead>Size</TableHead>
-                    <TableHead>Uploaded</TableHead>
-                    <TableHead>Share</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {files.map((file) => (
-                    <TableRow key={file.id}>
-                      <TableCell>
-                        <div className="flex items-center gap-2">
-                          {getMimeIcon(file.mime)}
-                          <div>
-                            <p className="font-medium">{file.customName || file.name}</p>
-                            {file.customName && (
-                              <p className="text-xs text-muted-foreground">{file.name}</p>
-                            )}
+              {/* Mobile Card View - visible only on mobile */}
+              <div className="md:hidden space-y-3" role="list" aria-label="Lista de archivos">
+                {files.map((file) => (
+                  <div key={file.id} role="listitem">
+                    <FileCard
+                      file={file}
+                      onDownload={handleDownload}
+                      onDelete={handleDelete}
+                      onCopyShareLink={handleCopyShareLink}
+                      onViewShareLinks={handleViewShareLinks}
+                      onShareSuccess={handleShareSuccess}
+                    />
+                  </div>
+                ))}
+              </div>
+
+              {/* Desktop Table View - hidden on mobile */}
+              <div className="hidden md:block">
+                <Table aria-label="Tabla de archivos">
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Size</TableHead>
+                      <TableHead>Uploaded</TableHead>
+                      <TableHead>Share</TableHead>
+                      <TableHead className="text-right">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {files.map((file) => (
+                      <TableRow key={file.id}>
+                        <TableCell>
+                          <div className="flex items-center gap-2">
+                            {getMimeIcon(file.mime)}
+                            <div>
+                              <p className="font-medium">{file.customName || file.name}</p>
+                              {file.customName && (
+                                <p className="text-xs text-muted-foreground">{file.name}</p>
+                              )}
+                            </div>
                           </div>
-                        </div>
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">{file.mime}</TableCell>
-                      <TableCell>{formatFileSize(file.size)}</TableCell>
-                      <TableCell className="text-muted-foreground">
-                        {formatDate(file.createdAt)}
-                      </TableCell>
-                      <TableCell>
-                        {file.shareLinks && file.shareLinks.length > 0 ? (
-                          <button
-                            onClick={() => handleViewShareLinks(file)}
-                            className="text-sm text-primary hover:underline flex items-center gap-1"
-                          >
-                            <Link2 className="h-3 w-3" />
-                            {file.shareLinks.length} {file.shareLinks.length === 1 ? 'share' : 'shares'}
-                          </button>
-                        ) : (
-                          <span className="text-xs text-muted-foreground">-</span>
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          {file.shareLinks && file.shareLinks.length > 0 && (
-                            <ShareDialog
-                              fileName={file.customName || file.name}
-                              shareUrl={`${window.location.origin}/share/${file.shareLinks[0].token}`}
-                              trigger={
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  title="Share file"
-                                >
-                                  <Share2 className="h-4 w-4" />
-                                </Button>
-                              }
-                            />
-                          )}
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">{file.mime}</TableCell>
+                        <TableCell>{formatFileSize(file.size)}</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {formatDate(file.createdAt)}
+                        </TableCell>
+                        <TableCell>
                           {file.shareLinks && file.shareLinks.length > 0 ? (
+                            <button
+                              onClick={() => handleViewShareLinks(file)}
+                              className="text-sm text-primary hover:underline flex items-center gap-1"
+                            >
+                              <Link2 className="h-3 w-3" />
+                              {file.shareLinks.length} {file.shareLinks.length === 1 ? 'share' : 'shares'}
+                            </button>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">-</span>
+                          )}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <div className="flex justify-end gap-2">
+                            {file.shareLinks && file.shareLinks.length > 0 && (
+                              <ShareDialog
+                                fileName={file.customName || file.name}
+                                shareUrl={`${window.location.origin}/share/${file.shareLinks[0].token}`}
+                                trigger={
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    title="Share file"
+                                  >
+                                    <Share2 className="h-4 w-4" />
+                                  </Button>
+                                }
+                              />
+                            )}
+                            {file.shareLinks && file.shareLinks.length > 0 ? (
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                onClick={() => handleCopyShareLink(file.shareLinks![0].token)}
+                                title="Copy share link"
+                              >
+                                <Copy className="h-4 w-4" />
+                              </Button>
+                            ) : (
+                              <ShareLinkDialog
+                                fileId={file.id}
+                                fileName={file.customName || file.name}
+                                onSuccess={handleShareSuccess}
+                                trigger={
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    title="Create share link"
+                                  >
+                                    <Link2 className="h-4 w-4" />
+                                  </Button>
+                                }
+                              />
+                            )}
                             <Button
                               variant="ghost"
                               size="icon"
-                              onClick={() => handleCopyShareLink(file.shareLinks![0].token)}
-                              title="Copy share link"
+                              onClick={() => handleDownload(file.id)}
+                              title="Download"
                             >
-                              <Copy className="h-4 w-4" />
+                              <Download className="h-4 w-4" />
                             </Button>
-                          ) : (
-                            <ShareLinkDialog
-                              fileId={file.id}
-                              fileName={file.customName || file.name}
-                              onSuccess={handleShareSuccess}
-                              trigger={
-                                <Button
-                                  variant="ghost"
-                                  size="icon"
-                                  title="Create share link"
-                                >
-                                  <Link2 className="h-4 w-4" />
-                                </Button>
-                              }
-                            />
-                          )}
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDownload(file.id)}
-                            title="Download"
-                          >
-                            <Download className="h-4 w-4" />
-                          </Button>
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            onClick={() => handleDelete(file)}
-                            title="Delete"
-                          >
-                            <Trash2 className="h-4 w-4" />
-                          </Button>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              onClick={() => handleDelete(file)}
+                              title="Delete"
+                            >
+                              <Trash2 className="h-4 w-4" />
+                            </Button>
+                          </div>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
 
               {/* Pagination */}
               <Pagination
