@@ -13,6 +13,8 @@ import { uploadFile } from '@/lib/api'
 import { useIsMobile } from '@/hooks/useMediaQuery'
 import type { UploadFilePayload } from '@/lib/types'
 import type { MetadataStatus } from '@/lib/json-metadata'
+import type { PathStatus } from '@/lib/path-validation'
+import { PathInputField } from '@/components/path-input-field'
 
 interface FileUploadProps {
   onUploadSuccess?: () => void
@@ -21,6 +23,8 @@ interface FileUploadProps {
 export function FileUpload({ onUploadSuccess }: FileUploadProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [customName, setCustomName] = useState('')
+  const [path, setPath] = useState('')
+  const [pathStatus, setPathStatus] = useState<PathStatus>('idle')
   const [metadata, setMetadata] = useState('')
   const [metadataStatus, setMetadataStatus] = useState<MetadataStatus>('idle')
   const [uploading, setUploading] = useState(false)
@@ -60,6 +64,11 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
       return
     }
 
+    if (pathStatus === 'invalid') {
+      toast.error('Please fix the invalid folder path')
+      return
+    }
+
     setUploading(true)
 
     try {
@@ -69,6 +78,10 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
 
       if (customName.trim()) {
         payload.customName = customName.trim()
+      }
+
+      if (path.trim()) {
+        payload.path = path.trim()
       }
 
       if (metadata.trim()) {
@@ -88,6 +101,8 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
       // Reset form
       setSelectedFile(null)
       setCustomName('')
+      setPath('')
+      setPathStatus('idle')
       setMetadata('')
       setMetadataStatus('idle')
 
@@ -107,16 +122,17 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
           <div
             {...getRootProps()}
             className={`border-2 border-dashed rounded-lg p-6 md:p-8 text-center transition-colors ${
-              isDragActive
-                ? 'border-primary bg-primary/5'
-                : 'border-muted-foreground/25'
+              isDragActive ? 'border-primary bg-primary/5' : 'border-muted-foreground/25'
             }`}
             role="region"
             aria-label="Área de carga de archivos"
             aria-describedby="upload-description"
           >
             <input {...getInputProps()} aria-hidden="true" tabIndex={-1} />
-            <Upload className="mx-auto h-12 w-12 text-muted-foreground mb-4" aria-hidden="true" />
+            <Upload
+              className="mx-auto h-12 w-12 text-muted-foreground mb-4"
+              aria-hidden="true"
+            />
 
             {selectedFile ? (
               <div role="status" aria-live="polite">
@@ -128,7 +144,9 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
             ) : (
               <div id="upload-description">
                 <p className="font-medium mb-2">
-                  {isDragActive ? 'Suelta el archivo aquí' : 'Arrastra y suelta un archivo aquí'}
+                  {isDragActive
+                    ? 'Suelta el archivo aquí'
+                    : 'Arrastra y suelta un archivo aquí'}
                 </p>
                 <p className="text-sm text-muted-foreground mb-4">
                   o usa los botones de abajo para seleccionar
@@ -212,6 +230,14 @@ export function FileUpload({ onUploadSuccess }: FileUploadProps) {
               Dale un nombre personalizado a tu archivo
             </p>
           </div>
+
+          <PathInputField
+            value={path}
+            onChange={setPath}
+            onStatusChange={setPathStatus}
+            id="file-upload-path"
+            disabled={uploading}
+          />
 
           <MetadataJsonField
             value={metadata}

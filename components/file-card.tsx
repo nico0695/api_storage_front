@@ -1,6 +1,6 @@
 'use client'
 
-import { FileIcon, Image, Video, FileText, Link2, Download, Trash2, Copy, Share2 } from 'lucide-react'
+import { FileIcon, Image, Video, FileText, Link2, Download, Trash2, Copy, Share2, Folder } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import type { FileItem } from '@/lib/types'
@@ -72,6 +72,14 @@ export function FileCard({
             <h3 className="font-medium text-base leading-tight mb-1 break-words">
               {file.customName || file.name}
             </h3>
+
+            {/* Path display */}
+            {file.path && (
+              <p className="text-xs text-muted-foreground mb-1 flex items-center gap-1">
+                <Folder className="h-3 w-3" />
+                <span>{file.path}</span>
+              </p>
+            )}
 
             {/* Original name if custom name exists */}
             {file.customName && (

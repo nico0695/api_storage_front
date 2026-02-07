@@ -156,6 +156,21 @@ export function FilterPanel({
         </Select>
       </div>
 
+      {/* Folder Path Filter */}
+      <div className="space-y-2">
+        <Label htmlFor="path-filter">Folder Path</Label>
+        <Input
+          id="path-filter"
+          type="text"
+          placeholder="e.g., documents"
+          value={filters.searchPath || ''}
+          onChange={(e) => updateFilter('searchPath', e.target.value || undefined)}
+        />
+        <p className="text-xs text-muted-foreground">
+          Search files by folder path (partial match)
+        </p>
+      </div>
+
       {/* File Size Filter */}
       <div className="space-y-2">
         <Label>File Size</Label>
