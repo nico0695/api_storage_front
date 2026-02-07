@@ -12,6 +12,8 @@ export interface FileItem {
   name: string
   customName: string | null
   key: string
+  path: string | null
+  fullPath: string
   mime: string
   size: number
   metadata: Record<string, unknown> | null
@@ -35,6 +37,7 @@ export interface FilesListResponse {
 
 export interface FileFilters {
   search?: string
+  searchPath?: string
   mime?: string
   minSize?: number
   maxSize?: number
@@ -47,6 +50,7 @@ export interface FileFilters {
 export interface UploadFilePayload {
   file: File
   customName?: string
+  path?: string
   metadata?: Record<string, unknown>
 }
 

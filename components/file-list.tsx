@@ -65,6 +65,7 @@ export function FileList({ refreshTrigger }: FileListProps) {
     }
 
     const search = searchParams.get('search')
+    const searchPath = searchParams.get('searchPath')
     const mime = searchParams.get('mime')
     const minSize = searchParams.get('minSize')
     const maxSize = searchParams.get('maxSize')
@@ -73,6 +74,9 @@ export function FileList({ refreshTrigger }: FileListProps) {
 
     if (search) {
       params.search = search
+    }
+    if (searchPath) {
+      params.searchPath = searchPath
     }
     if (mime) {
       params.mime = mime
@@ -213,6 +217,7 @@ export function FileList({ refreshTrigger }: FileListProps) {
 
   const hasActiveFilters =
     !!filters.search ||
+    !!filters.searchPath ||
     !!filters.mime ||
     filters.minSize !== undefined ||
     filters.maxSize !== undefined ||
@@ -221,6 +226,7 @@ export function FileList({ refreshTrigger }: FileListProps) {
 
   const activeFilterCount = [
     filters.search,
+    filters.searchPath,
     filters.mime,
     filters.minSize,
     filters.maxSize,
@@ -322,6 +328,7 @@ export function FileList({ refreshTrigger }: FileListProps) {
                   <TableHeader>
                     <TableRow>
                       <TableHead>Name</TableHead>
+                      <TableHead>Path</TableHead>
                       <TableHead>Type</TableHead>
                       <TableHead>Size</TableHead>
                       <TableHead>Uploaded</TableHead>
@@ -342,6 +349,13 @@ export function FileList({ refreshTrigger }: FileListProps) {
                               )}
                             </div>
                           </div>
+                        </TableCell>
+                        <TableCell className="text-muted-foreground">
+                          {file.path ? (
+                            <span className="text-xs">{file.path}</span>
+                          ) : (
+                            <span className="text-xs text-muted-foreground">-</span>
+                          )}
                         </TableCell>
                         <TableCell className="text-muted-foreground">{file.mime}</TableCell>
                         <TableCell>{formatFileSize(file.size)}</TableCell>

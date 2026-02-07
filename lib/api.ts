@@ -50,6 +50,10 @@ export async function uploadFile(payload: UploadFilePayload): Promise<FileItem> 
     formData.append('customName', payload.customName)
   }
 
+  if (payload.path) {
+    formData.append('path', payload.path)
+  }
+
   if (payload.metadata) {
     formData.append('metadata', JSON.stringify(payload.metadata))
   }

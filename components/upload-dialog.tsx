@@ -20,6 +20,8 @@ import { uploadFile } from '@/lib/api'
 import { useIsMobile } from '@/hooks/useMediaQuery'
 import type { UploadFilePayload } from '@/lib/types'
 import type { MetadataStatus } from '@/lib/json-metadata'
+import type { PathStatus } from '@/lib/path-validation'
+import { PathInputField } from '@/components/path-input-field'
 
 interface UploadDialogProps {
   onUploadSuccess?: () => void
@@ -29,6 +31,8 @@ export function UploadDialog({ onUploadSuccess }: UploadDialogProps) {
   const [open, setOpen] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [customName, setCustomName] = useState('')
+  const [path, setPath] = useState('')
+  const [pathStatus, setPathStatus] = useState<PathStatus>('idle')
   const [metadata, setMetadata] = useState('')
   const [metadataStatus, setMetadataStatus] = useState<MetadataStatus>('idle')
   const [uploading, setUploading] = useState(false)
@@ -68,6 +72,12 @@ export function UploadDialog({ onUploadSuccess }: UploadDialogProps) {
       return
     }
 
+    // Validate path before upload
+    if (pathStatus === 'invalid') {
+      toast.error('Please fix the invalid folder path')
+      return
+    }
+
     setUploading(true)
 
     try {
@@ -77,6 +87,11 @@ export function UploadDialog({ onUploadSuccess }: UploadDialogProps) {
 
       if (customName.trim()) {
         payload.customName = customName.trim()
+      }
+
+      // Add path if provided and valid
+      if (path.trim()) {
+        payload.path = path.trim()
       }
 
       if (metadata.trim()) {
@@ -96,6 +111,8 @@ export function UploadDialog({ onUploadSuccess }: UploadDialogProps) {
       // Reset form
       setSelectedFile(null)
       setCustomName('')
+      setPath('')
+      setPathStatus('idle')
       setMetadata('')
       setMetadataStatus('idle')
       setOpen(false)
@@ -233,6 +250,14 @@ export function UploadDialog({ onUploadSuccess }: UploadDialogProps) {
               Dale un nombre personalizado a tu archivo
             </p>
           </div>
+
+          <PathInputField
+            value={path}
+            onChange={setPath}
+            onStatusChange={setPathStatus}
+            id="upload-dialog-path"
+            disabled={uploading}
+          />
 
           <MetadataJsonField
             value={metadata}
